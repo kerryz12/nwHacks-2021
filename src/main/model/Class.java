@@ -13,4 +13,7 @@ public class Class {
         assignments.add(new Assignment(name, date, weight));
     }
 
+    public void addExam (String name, int date, int weight) {
+        exams.add(new Exam(name, date, weight));
+    }
 }
