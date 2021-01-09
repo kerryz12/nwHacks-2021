@@ -11,6 +11,7 @@ public class Class {
     private ArrayList<Exam> exams;
     private int importance;
 
+
     public Class (String code, ArrayList<Assignment> assig, ArrayList<Exam> exam, int imp) {
         classCode = code;
         assignments = assig;
