@@ -1,9 +1,12 @@
-package model;
+package main.model;
 
 public class GradedItem {
     private String name;
     private int date;
     private int weight;
+
+    public GradedItem(String name, int date, int weight) {
+    }
 
     public String getName() {
         return name;
