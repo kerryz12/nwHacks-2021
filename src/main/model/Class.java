@@ -1,7 +1,7 @@
-package model;
+package main.model;
 
-import model.Assignment;
-import model.Exam;
+import main.model.Assignment;
+import main.model.Exam;
 import java.util.ArrayList;
 
 public class Class {
@@ -10,7 +10,7 @@ public class Class {
     private ArrayList<Exam> exams;
 
     public void addAssignment (String name, int date, int weight) {
-        assignments.add(new Assignment());
+        assignments.add(new Assignment(name, date, weight));
     }
 
 }
