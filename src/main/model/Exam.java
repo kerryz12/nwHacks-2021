@@ -1,5 +1,5 @@
-package model;
+package main.model;
 
-public class Exam extends model.GradedItem {
+public class Exam extends main.model.GradedItem {
 
 }
