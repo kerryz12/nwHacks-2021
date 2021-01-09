@@ -25,4 +25,6 @@ public class Class {
     public void addExam (String name, int date, int weight) {
         exams.add(new Exam(name, date, weight));
     }
+
+
 }
