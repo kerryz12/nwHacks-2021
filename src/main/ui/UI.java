@@ -344,7 +344,7 @@ public class UI extends Application {
                 grid.setPadding(new Insets(25, 25, 25, 25));
 
                 Label namePrompt = new Label("Assignment Name:");
-                grid.add(namePrompt, 0, 0, 20, 20);
+                grid.add(namePrompt, 0, 0, 35, 20);
 
                 TextField nameIn = new TextField();
                 grid.add(nameIn, 35, 0,20,20);
