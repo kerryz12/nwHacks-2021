@@ -37,4 +37,7 @@ public class ClassList {
     public void setClasslist(List<Class> classlist) {
         this.classlist = classlist;
     }
+
+    public List<Class> getList() { return this.classlist; }
+
 }
