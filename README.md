@@ -1,6 +1,6 @@
 # nwHacks-2021
 
-# ! We could implement a calendar using this framework: https://github.com/dlsc-software-consulting-gmbh/CalendarFX !
+! We could implement a calendar using this framework: https://github.com/dlsc-software-consulting-gmbh/CalendarFX !
 
 ## Phase 1: Calendar Functionality
 
