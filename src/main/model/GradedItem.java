@@ -1,5 +1,7 @@
 package main.model;
 
+import java.util.Date;
+
 public class GradedItem {
     private String name;
     private int date;
