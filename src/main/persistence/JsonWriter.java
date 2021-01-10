@@ -2,12 +2,13 @@ package main.persistence;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import main.model.Class;
 import main.model.ClassList;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -27,20 +28,27 @@ public class JsonWriter {
         return;
     }
 
-    public String readClassFromJson (String filename) {
-        String args = "";
+    public Class readClassFromJson (String filename) {
+        Class classObj = null;
 
-        File newJson = new File(filename);
+        /*File newJson = new File(filename);
         try {
             Scanner myReader = new Scanner(newJson);
             while (myReader.hasNextLine()) {
-                args = args + myReader.nextLine() + '\n';
+                args = args + myReader.nextLine();
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        return args;
+        try {
+            Gson gson = new Gson();
+            classObj = gson.fromJson(new FileReader(filename), Class.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return classObj;
     }
 
     private String writeObjectToJson (Object object) {
