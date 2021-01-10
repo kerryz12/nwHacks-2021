@@ -35,11 +35,10 @@ public class ToDoList {
             int curr = c.getImp();
             List<GradedItem> tasks = c.getTasks();
             for (GradedItem g : tasks) {
-
                 ZonedDateTime zdt = g.getDate().atZone(ZoneId.of("America/Los_Angeles"));
                 long millis = zdt.toInstant().toEpochMilli();
                 long hoursLeft = (millis - currTime) / MILLI_IN_HOUR;
-                double val = g.getWeight() * curr * hoursLeft;
+                double val = g.getWeight()/10 * curr * 1/hoursLeft;
                 weightedTasks.put(g, val);
             }
         }
