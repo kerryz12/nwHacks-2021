@@ -20,13 +20,16 @@ public class ClassList {
     }
 
     /**
-     * @param c
+     * @param code
      * @return removes class from list of classes
      */
-    public void removeClass(Class c) {
+    public void removeClass(String code) {
         int i = 0;
-        for (Class cl : classlist) {
-
+        for (Class c : classlist) {
+            if (c.getClassCode().equals(code)) {
+                classlist.remove(i);
+            }
+            i++;
         }
     }
 
