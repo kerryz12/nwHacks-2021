@@ -61,7 +61,7 @@ public class ConsoleApp {
                 break;
 
             case "view":
-                doView();
+                doView(classlist);
         }
     }
 
@@ -82,8 +82,30 @@ public class ConsoleApp {
         System.out.println("Enter importance of class (0 to 10): ");
         int importance = input.nextInt();
 
+        classlist.addClass(new Class(code, importance));
+    }
+
+    public void doRemove() {
+        System.out.println("Enter class code: ");
+        String code = input.next();
+
+        classlist.removeClass(code);
+    }
+
+    public void doEdit() {
+        System.out.println("Not implemented yet");
+    }
+
+    public void doView(ClassList list) {
+        for (Class c : list.getClasslist()) {
+            System.out.println("\nClass code: " + c.getClassCode());
+            System.out.println("\tTasks: " + c.getTasks());
+            System.out.println("\tImportance: " + c.getImp());
+            System.out.println("\n");
+        }
     }
 
     public static void main(String[] args) {
+        new ConsoleApp();
     }
 }

@@ -40,13 +40,13 @@ public class Class {
      *
      * @param code
      */
-    public Class (String code){
+    public Class (String code) {
         classCode = code;
         tasks = new ArrayList<GradedItem>();
         importance = 5;
     }
 
-    public void addTask (GradedItem gi){
+    public void addTask (GradedItem gi) {
         tasks.add(gi);
     }
 
