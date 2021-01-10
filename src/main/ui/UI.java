@@ -1,6 +1,10 @@
 package main.ui;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.view.CalendarView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -28,19 +32,23 @@ import main.model.ToDoList;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
 
 public class UI extends Application {
     private ClassList classlist;
     private ListView<String> list;
+    private ObservableList<String> tasksDateSorted;
     private ObservableList<String> items;
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
+    private CalendarView calendarView;
 
     private void setup() {
         classlist = new ClassList();
         list = new ListView<String>();
+        tasksDateSorted = FXCollections.observableArrayList();
         items = FXCollections.observableArrayList();
     }
 
@@ -61,11 +69,12 @@ public class UI extends Application {
         VBox taskBox = new VBox(5);
         VBox toDoBox = new VBox(5);
 
-        ScrollPane taskList = new ScrollPane(taskBox);
-        //taskList.setFitToWidth(true);
+        ListView<String> taskList = new ListView<String>();
 
         ScrollPane toDoList = new ScrollPane(toDoBox);
         //toDoList.setFitToWidth(true);
+
+        createCalendar();
 
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
@@ -88,9 +97,14 @@ public class UI extends Application {
 
         Button refreshButton = new Button("Refresh");
         refreshButton.setOnAction(e -> {
+            tasksDateSorted.removeAll();
             for (Class c : classlist.getClasslist()) {
                 List<GradedItem> tasks = c.getTasks();
+                for (GradedItem i : tasks) {
+                    tasksDateSorted.add(i.getName());
+                }
             }
+            taskList.setItems(tasksDateSorted);
         });
 
         Button refreshToDo = new Button("ToDo");
@@ -114,7 +128,6 @@ public class UI extends Application {
         Button addClass = new Button();
         addClass.setText("Add Class");
         addClass.setOnAction(actionEvent -> {
-            Label secondLabel = new Label("I'm a Label on new Window");
             GridPane grid = new GridPane();
             grid.setAlignment(Pos.TOP_LEFT);
             grid.setHgap(10);
@@ -196,8 +209,23 @@ public class UI extends Application {
         GridPane buttons = new GridPane();
         buttons.add(addClass,0,0,3,3);
         buttons.add(refreshToDo, 0,3,3,3);
-        BorderPane rootPane = new BorderPane(null, null, null, null, buttons);
-        rootPane.getChildren().addAll(taskBox, toDoBox);
+      
+        buttons.add(refreshButton, 0, 6, 3, 3);
+        GridPane rootPane = new GridPane();
+        GridPane.setConstraints(buttons, 0, 0);
+        GridPane.setConstraints(taskBox, 1, 0);
+        GridPane.setConstraints(toDoBox, 6, 0);
+        GridPane.setConstraints(taskList, 9, 0);
+        ColumnConstraints column1 = new ColumnConstraints();
+        rootPane.getColumnConstraints().add(new ColumnConstraints(100)); // column 0 is 100 wide
+        rootPane.getColumnConstraints().add(new ColumnConstraints(800)); // column 1 is 800 wide
+
+        column1.setPercentWidth(50);
+
+        taskList.setItems(tasksDateSorted);
+
+        rootPane.getChildren().addAll(buttons, taskBox, toDoBox, taskList);
+
 
         //when the scene is created, it should just render all the groups
 
@@ -206,6 +234,45 @@ public class UI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    private void createCalendar() {
+        calendarView = new CalendarView();
+
+        Calendar taskCalendar = new Calendar("Tasks");
+
+        taskCalendar.setStyle(Calendar.Style.STYLE1);
+
+        CalendarSource myCalendarSource = new CalendarSource("My Calendars");
+        myCalendarSource.getCalendars().add(taskCalendar);
+
+        calendarView.getCalendarSources().add(myCalendarSource);
+
+        calendarView.setRequestedTime(LocalTime.now());
+
+        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(() -> {
+                        calendarView.setToday(LocalDate.now());
+                        calendarView.setTime(LocalTime.now());
+                    });
+
+                    try {
+                        // update every 10 seconds
+                        sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
+        };
+
+        updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+        updateTimeThread.setDaemon(true);
+        updateTimeThread.start();
     }
 
     private Button createAssignmentButton(Stage primaryStage) {
@@ -270,7 +337,10 @@ public class UI extends Application {
                     public void handle(ActionEvent actionEvent) {
                         //should add a check if weight field is actually a parseable double.
                         classlist.getClass(0).addTask(
+
                                 new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(11, 59), Double.parseDouble(weightIn.getCharacters().toString())));
+                        newWindow.close();
+
                     }
                 } );
             }
