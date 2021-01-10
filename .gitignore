@@ -17,4 +17,4 @@ gradlew
 *.bat
 soln.txt
 /lib/gson-2.8.6.jar
-/data
+/data/
