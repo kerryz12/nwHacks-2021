@@ -81,9 +81,11 @@ public class ConsoleApp {
 
             case "save":
                 doSave();
+                break;
 
             case "load":
                 doLoad();
+                break;
         }
     }
 
@@ -169,7 +171,7 @@ public class ConsoleApp {
 
     public void doLoad() {
         JsonReader reader = new JsonReader();
-        reader.readClassListFromJson();
+        classlist = reader.readClassListFromJson();
     }
 
     public static void main(String[] args) {

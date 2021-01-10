@@ -32,7 +32,7 @@ public class JsonWriter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            writeObjectToJson(c, "data/class" + classNumber);
+            writeObjectToJson(c, "data/class" + classNumber + ".json");
             classNumber++;
         }
 
