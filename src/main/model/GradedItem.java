@@ -7,9 +7,12 @@ import java.util.Date;
 public class GradedItem {
     private String name;
     private LocalDateTime date;
-    private int weight;
+    private double weight;
 
-    public GradedItem(String name, LocalDateTime date, int weight) {
+    public GradedItem(String name, LocalDateTime date, double weight) {
+        this.name = name;
+        this.date = date;
+        this.weight = weight;
     }
 
     public String getName() {
@@ -28,7 +31,7 @@ public class GradedItem {
         this.date = date;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 

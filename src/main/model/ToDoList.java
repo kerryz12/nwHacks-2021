@@ -9,7 +9,7 @@ public class ToDoList {
     private final static int MILLI_IN_HOUR = 3600000;
     private long currTime;
     private ClassList classes;
-    private Map<GradedItem, Long> weightedTasks;
+    private Map<GradedItem, Double> weightedTasks;
     private ArrayList<GradedItem> sortedList;
 
     /** To do list is just a sorted list of tasks.
@@ -38,7 +38,7 @@ public class ToDoList {
                 ZonedDateTime zdt = g.getDate().atZone(ZoneId.of("America/Los_Angeles"));
                 long millis = zdt.toInstant().toEpochMilli();
                 long hoursLeft = (millis - currTime)/MILLI_IN_HOUR;
-                long val = g.getWeight() * curr * hoursLeft;
+                double val = g.getWeight() * curr * hoursLeft;
                 weightedTasks.put(g,val);
             }
         }
@@ -50,20 +50,20 @@ public class ToDoList {
      * Sorts a Map based off the values.
      * @param map Input map to be sorted. Must not be null.
      * @param <GradedItem> Keys of the map, must not be null.
-     * @param <Long> Must be a positive number.
+     * @param <Double> Must be a positive number.
      * @return Sorted Map with Graded Items as Keys and Longs as the Values.
      */
-    public static <GradedItem, Long> Map<GradedItem, Long> sortByValue(Map<GradedItem, Long> map) {
-        List<Map.Entry<GradedItem, Long>> list = new ArrayList<>(map.entrySet());
-        list.sort(new Comparator<Map.Entry<GradedItem, Long>>() {
+    public static <GradedItem, Double> Map<GradedItem, Double> sortByValue(Map<GradedItem, Double> map) {
+        List<Map.Entry<GradedItem, Double>> list = new ArrayList<>(map.entrySet());
+        list.sort(new Comparator<Map.Entry<GradedItem, Double>>() {
             @Override
             //if o1 is greater, return 1, if o2 is greater, return -1.
             // greater in this case, is defined as having a lesser value.
-            public int compare(Map.Entry<GradedItem, Long> o1, Map.Entry<GradedItem, Long> o2) {
-                if (((Number)o1.getValue()).longValue() > ((Number)o2.getValue()).longValue()){
+            public int compare(Map.Entry<GradedItem, Double> o1, Map.Entry<GradedItem, Double> o2) {
+                if (((Number)o1.getValue()).doubleValue() > ((Number)o2.getValue()).doubleValue()){
                     return -1;
                 }
-                else if (((Number)o1.getValue()).longValue() < ((Number)o2.getValue()).longValue()){
+                else if (((Number)o1.getValue()).doubleValue() < ((Number)o2.getValue()).doubleValue()){
                     return 1;
                 }
                 else {
@@ -71,8 +71,8 @@ public class ToDoList {
                 }
             }
         });
-        Map<GradedItem, Long> result = new LinkedHashMap<>();
-        for (Map.Entry<GradedItem, Long> entry : list) {
+        Map<GradedItem, Double> result = new LinkedHashMap<>();
+        for (Map.Entry<GradedItem, Double> entry : list) {
             result.put(entry.getKey(), entry.getValue());
         }
         return result;

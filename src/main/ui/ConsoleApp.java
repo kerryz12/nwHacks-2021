@@ -116,9 +116,11 @@ public class ConsoleApp {
         System.out.println("Enter assignment/exam: ");
         String name = input.next();
         System.out.println("Enter due date + time (YYYY-MM-DD HH:MM): ");
-        String due = input.next();
+        String date = input.next();
+        String time = input.next();
+        String due = date + " " + time;
         System.out.println("Enter weight: ");
-        int weight = Integer.parseInt(input.next());
+        double weight = Integer.parseInt(input.next());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(due, formatter);
@@ -146,10 +148,10 @@ public class ConsoleApp {
             System.out.println("\n" + gi.getName());
             System.out.println("\tDue date: " + gi.getDate());
         }
+    }
 
-    public void doSave() {
+    public void doSave(){
         JsonWriter saver = new JsonWriter();
-
         saver.writeClassListToJson(classlist);
     }
 
