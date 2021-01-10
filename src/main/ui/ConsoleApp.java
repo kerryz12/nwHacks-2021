@@ -146,6 +146,7 @@ public class ConsoleApp {
             System.out.println("\n" + gi.getName());
             System.out.println("\tDue date: " + gi.getDate());
         }
+    }
 
     public void doSave() {
         JsonWriter saver = new JsonWriter();
