@@ -13,19 +13,15 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class JsonWriter {
+    private static final int LIMIT = 32;
 
     public JsonWriter() {}
 
     public void writeClassListToJson (ClassList classList) {
         int classNumber = 0;
 
-        /*while (iter.hasNext() && classNumber < 12) {
-            json = writeObjectToJson(iter, "class" + classNumber);
-            classNumber++;
-        }*/
-
         for (Class c : classList.getClasslist()) {
-            if (classNumber > 10) {
+            if (classNumber > LIMIT) {
                 return;
             }
 
