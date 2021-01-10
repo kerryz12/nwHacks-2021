@@ -3,12 +3,12 @@ package main.model;
 import main.model.Assignment;
 import main.model.Exam;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Class {
     private String classCode;
-    private ArrayList<Assignment> assignments;
-    private ArrayList<Exam> exams;
+    private List<GradedItem> tasks;
     private int importance;
 
 
