@@ -20,12 +20,12 @@ As a user, I want to be able to:
 
 ## Phase 3: GUI
 
-As a user, I want to be able to:
+Features:
 
-1. 
+1. Calendar 
+2. Detailed list of tasks (info, edit, delete)
+3. To-do list (sorted by importance)
+4. Class list (info, edit, add, remove)
+5. When class in list is double clicked, pop up menu to add task to class (assignment or test)
 
 ## Phase 4: Multiplayer
-
-As a user, I want to be able to:
-
-1. 

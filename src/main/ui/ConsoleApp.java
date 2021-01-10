@@ -81,9 +81,11 @@ public class ConsoleApp {
 
             case "save":
                 doSave();
+                break;
 
             case "load":
                 doLoad();
+                break;
         }
     }
 
