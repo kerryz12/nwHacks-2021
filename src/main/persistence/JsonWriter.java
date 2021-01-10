@@ -1,23 +1,27 @@
 package main.persistence;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 import main.model.Class;
 import main.model.ClassList;
-import java.io.*;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.Scanner;
 
 public class JsonWriter {
     private static final int LIMIT = 32;
 
     public JsonWriter() {}
+
+    public void writeUsernameToJson (String username) {
+        try (FileWriter writer = new FileWriter("data/username.json")) {
+            writer.write(username);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
 
     public void writeClassListToJson (ClassList classList) {
         int classNumber = 0;
@@ -39,14 +43,15 @@ public class JsonWriter {
         return;
     }
 
-    public String writeObjectToJson (Object object, String filename) {
+    public void writeObjectToJson (Object object, String filename) {
         Gson gson = new Gson();
+
         try (FileWriter writer = new FileWriter(filename)) {
             gson.toJson(object, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return filename;
+        return;
     }
 }
