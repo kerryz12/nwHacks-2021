@@ -7,10 +7,16 @@ import main.model.ClassList;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class JsonReader {
 
     public JsonReader() {}
+
+    public String readUsernameFromJson (String filename) {
+        Scanner reader = new Scanner(filename);
+        return reader.nextLine();
+    }
 
     public ClassList readClassListFromJson () {
         File folder = new File("data");

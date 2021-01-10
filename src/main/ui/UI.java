@@ -33,15 +33,11 @@ public class UI extends Application {
     private ListView<String> list;
     private ObservableList<String> items;
 
-
     private void setup() {
         classlist = new ClassList();
         list = new ListView<String>();
         items = FXCollections.observableArrayList();
     }
-
-    private ClassList classlist;
-    Button addClass;
 
     public static void main(String[] args) {
         launch(args);
@@ -50,7 +46,7 @@ public class UI extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("The Scheduler");
-      
+
         Group todoGroup = new Group();
         Group menuGroup = new Group();
 
@@ -62,11 +58,9 @@ public class UI extends Application {
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
             AnchorPane anchorPane = new AnchorPane();
-            String style = String.format("-fx-background: rgb(%d, %d, %d);"+
-                            "-fx-background-color: -fx-background;",
-                    rng.nextInt(256),
-                    rng.nextInt(256),
-                    rng.nextInt(256));
+            String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                    rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+
             anchorPane.setStyle(style);
             Label label = new Label("Pane "+(taskBox.getChildren().size()+1));
             AnchorPane.setLeftAnchor(label, 5.0);
@@ -86,9 +80,9 @@ public class UI extends Application {
                 List<GradedItem> tasks = c.getTasks();
             }
         });
-      
+
         BorderPane rootPane = new BorderPane(taskList, null, null, null, addButton);
-=======
+
         Button addClass = new Button();
         addClass.setText("Add Class");
         addClass.setOnAction(new EventHandler<ActionEvent>() {
@@ -153,7 +147,9 @@ public class UI extends Application {
 
         //when the scene is created, it should just render all the groups
 
-        Scene scene = new Scene(rootPane, 1500, 1000);
+
+        Scene scene = new Scene(rootPane, 1600, 900);
+
         primaryStage.setScene(scene);
         primaryStage.show();
 

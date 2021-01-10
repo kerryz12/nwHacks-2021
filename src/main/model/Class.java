@@ -1,8 +1,5 @@
 package main.model;
 
-import main.model.Assignment;
-import main.model.Exam;
-
 import java.util.ArrayList;
 import java.util.List;
 
