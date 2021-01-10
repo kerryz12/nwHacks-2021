@@ -17,7 +17,6 @@ public class JsonWriter {
     public JsonWriter() {}
 
     public void writeClassListToJson (ClassList classList) {
-        //Iterator<Class> iter = classList.getClasslist().iterator();
         int classNumber = 0;
 
         /*while (iter.hasNext() && classNumber < 12) {
@@ -37,39 +36,14 @@ public class JsonWriter {
         return;
     }
 
-    public Class readClassFromJson (String filename) {
-        Class classObj = null;
-
-        try {
-            Gson gson = new Gson();
-            classObj = gson.fromJson(new FileReader(filename), Class.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        return classObj;
-    }
-
     public String writeObjectToJson (Object object, String filename) {
         Gson gson = new Gson();
-        try {
-            gson.toJson(object, new FileWriter(filename));
+        try (FileWriter writer = new FileWriter(filename)) {
+            gson.toJson(object, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return filename;
     }
-
-    /*private void createFile(int num, String json) {
-        File newJson = new File("class" + num);
-        try {
-            FileWriter myWriter = new FileWriter("class" + num);
-            myWriter.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return;
-    }*/
 }
