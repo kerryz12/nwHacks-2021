@@ -20,8 +20,7 @@ public class JsonWriter {
         String json;
 
         while (iter.hasNext()) {
-            json = writeObjectToJson(iter);
-            createFile(classNumber, json);
+            json = writeObjectToJson(iter, "class" + classNumber);
             classNumber++;
         }
 
@@ -52,7 +51,7 @@ public class JsonWriter {
         return filename;
     }
 
-    private void createFile(int num, String json) {
+    /*private void createFile(int num, String json) {
         File newJson = new File("class" + num);
         try {
             FileWriter myWriter = new FileWriter("class" + num);
@@ -62,5 +61,5 @@ public class JsonWriter {
         }
 
         return;
-    }
+    }*/
 }
