@@ -14,13 +14,23 @@ import java.util.Scanner;
 
 public class JsonWriter {
 
-    public void writeClassListToJson (ClassList classList) {
-        Iterator<Class> iter = classList.getClasslist().iterator();
-        int classNumber = 0;
-        String json;
+    public JsonWriter() {}
 
-        while (iter.hasNext()) {
+    public void writeClassListToJson (ClassList classList) {
+        //Iterator<Class> iter = classList.getClasslist().iterator();
+        int classNumber = 0;
+
+        /*while (iter.hasNext() && classNumber < 12) {
             json = writeObjectToJson(iter, "class" + classNumber);
+            classNumber++;
+        }*/
+
+        for (Class c : classList.getClasslist()) {
+            if (classNumber > 10) {
+                return;
+            }
+
+            writeObjectToJson(c, "class" + classNumber);
             classNumber++;
         }
 
@@ -41,7 +51,7 @@ public class JsonWriter {
     }
 
     public String writeObjectToJson (Object object, String filename) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
         try {
             gson.toJson(object, new FileWriter(filename));
         } catch (IOException e) {
