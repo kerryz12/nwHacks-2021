@@ -271,15 +271,19 @@ public class UI extends Application {
         GridPane.setConstraints(taskList, 9, 0);
         ColumnConstraints column1 = new ColumnConstraints();
         rootPane.getColumnConstraints().add(new ColumnConstraints(100)); // column 0 is 100 wide
-        rootPane.getColumnConstraints().add(new ColumnConstraints(800)); // column 1 is 800 wide
+        rootPane.getColumnConstraints().add(new ColumnConstraints(750)); // column 1 is 750 wide
+        rootPane.getColumnConstraints().add(new ColumnConstraints(30)); // column 2 is 50 wide
 
         column1.setPercentWidth(50);
 
         taskList.setItems(tasksDateSorted);
+        taskList.setPrefHeight(800);
+        taskList.setPrefWidth(350);
         toDoListView.setItems(todolist);
+        toDoListView.setPrefHeight(800);
+        toDoListView.setPrefWidth(350);
 
         rootPane.getChildren().addAll(buttons, taskBox, toDoListView, taskList);
-
 
         //when the scene is created, it should just render all the groups
 
