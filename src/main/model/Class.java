@@ -54,4 +54,15 @@ public class Class {
 
     public int getImp() { return importance; }
 
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public void setImportance(int importance) {
+        this.importance = importance;
+    }
 }
