@@ -34,6 +34,7 @@ import java.util.Random;
 public class UI extends Application {
     private ClassList classlist;
     private ListView<String> list;
+    private ObservableList<String> tasksDateSorted;
     private ObservableList<String> items;
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
@@ -41,6 +42,7 @@ public class UI extends Application {
     private void setup() {
         classlist = new ClassList();
         list = new ListView<String>();
+        tasksDateSorted = FXCollections.observableArrayList();
         items = FXCollections.observableArrayList();
     }
 
@@ -61,9 +63,7 @@ public class UI extends Application {
         VBox taskBox = new VBox(5);
         VBox toDoBox = new VBox(5);
 
-        ScrollPane taskList = new ScrollPane(taskBox);
-        taskList.setFitToWidth(true);
-
+        ListView<String> taskList = new ListView<String>();
 
         ScrollPane toDoList = new ScrollPane(toDoBox);
         toDoList.setFitToWidth(true);
@@ -89,9 +89,14 @@ public class UI extends Application {
 
         Button refreshButton = new Button("Refresh");
         refreshButton.setOnAction(e -> {
+            tasksDateSorted.removeAll();
             for (Class c : classlist.getClasslist()) {
                 List<GradedItem> tasks = c.getTasks();
+                for (GradedItem i : tasks) {
+                    tasksDateSorted.add(i.getName());
+                }
             }
+            taskList.setItems(tasksDateSorted);
         });
 
         Button refreshToDo = new Button("ToDo");
@@ -113,7 +118,6 @@ public class UI extends Application {
         Button addClass = new Button();
         addClass.setText("Add Class");
         addClass.setOnAction(actionEvent -> {
-            Label secondLabel = new Label("I'm a Label on new Window");
             GridPane grid = new GridPane();
             grid.setAlignment(Pos.TOP_LEFT);
             grid.setHgap(10);
@@ -195,10 +199,21 @@ public class UI extends Application {
         GridPane buttons = new GridPane();
         buttons.add(addClass,0,0,3,3);
         buttons.add(refreshToDo, 0,3,3,3);
-        BorderPane rootPane = new BorderPane(taskList, null, null, null, buttons);
+        buttons.add(refreshButton, 0, 6, 3, 3);
+        GridPane rootPane = new GridPane();
+        GridPane.setConstraints(buttons, 0, 0);
+        GridPane.setConstraints(taskBox, 1, 0);
+        GridPane.setConstraints(toDoBox, 6, 0);
+        GridPane.setConstraints(taskList, 9, 0);
+        ColumnConstraints column1 = new ColumnConstraints();
+        rootPane.getColumnConstraints().add(new ColumnConstraints(100)); // column 0 is 100 wide
+        rootPane.getColumnConstraints().add(new ColumnConstraints(800)); // column 1 is 800 wide
 
+        column1.setPercentWidth(50);
 
-        rootPane.getChildren().addAll(taskBox, toDoBox);
+        taskList.setItems(tasksDateSorted);
+
+        rootPane.getChildren().addAll(buttons, taskBox, toDoBox, taskList);
 
         //when the scene is created, it should just render all the groups
 
@@ -264,7 +279,8 @@ public class UI extends Application {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         classlist.getClass(0).addTask(
-                                new GradedItem(nameIn.toString(), dateIn.atTime(1, 0), 5));
+                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(1, 0), 5));
+                        newWindow.close();
                     }
                 } );
             }
