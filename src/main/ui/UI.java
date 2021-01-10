@@ -34,8 +34,8 @@ public class UI extends Application {
     private ClassList classlist;
     private ListView<String> list;
     private ObservableList<String> items;
-    //private int classCounter = 0;
     private LocalDate dateIn;
+    private final static int MAX_IMPORTANCE = 10;
 
     private void setup() {
         classlist = new ClassList();
@@ -138,7 +138,9 @@ public class UI extends Application {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         if (!classlist.contains(codeIn.getCharacters().toString())) {
-                            classlist.addClass(new Class(codeIn.getCharacters().toString(), Integer.parseInt(importanceIn.getCharacters().toString())));
+                            classlist.addClass(new Class(codeIn.getCharacters().toString(),
+                                    (Integer.parseInt(importanceIn.getCharacters().toString()) < 0) ? 0 :
+                                    Math.min(Integer.parseInt(importanceIn.getCharacters().toString()), MAX_IMPORTANCE)));
 
                             AnchorPane anchorPane = new AnchorPane();
                             String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
@@ -164,7 +166,7 @@ public class UI extends Application {
                             taskBox.getChildren().add(anchorPane);
                         }
                         else {
-                            createOkayWindow(primaryStage);
+                            createOkayWindow(primaryStage, "That class already exists!");
                         }
 
                         newWindow.close();
@@ -250,14 +252,14 @@ public class UI extends Application {
         return addAssignment;
     }
 
-    private void createOkayWindow (Stage primaryStage) {
+    private void createOkayWindow (Stage primaryStage, String text) {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Label namePrompt = new Label("Class already exists!");
+        Label namePrompt = new Label(text);
         grid.add(namePrompt, 0, 0, 20, 20);
 
         Button okay = new Button();

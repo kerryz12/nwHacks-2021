@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class JsonWriter {
-    private static final int LIMIT = 32;
+    private final static int LIMIT = 32;
 
     public JsonWriter() {}
 
