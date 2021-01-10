@@ -139,33 +139,33 @@ public class UI extends Application {
                     public void handle(ActionEvent actionEvent) {
                         if (!classlist.contains(codeIn.getCharacters().toString())) {
                             classlist.addClass(new Class(codeIn.getCharacters().toString(), Integer.parseInt(importanceIn.getCharacters().toString())));
+
+                            AnchorPane anchorPane = new AnchorPane();
+                            String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                                    rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+
+                            anchorPane.setStyle(style);
+                            Label label = new Label(classlist.getClass(taskBox.getChildren().size()).getClassCode());
+                            AnchorPane.setLeftAnchor(label, 5.0);
+                            AnchorPane.setTopAnchor(label, 5.0);
+
+                            Button removeButton = new Button("Remove");
+                            removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
+                            AnchorPane.setRightAnchor(removeButton, 5.0);
+                            AnchorPane.setTopAnchor(removeButton, 5.0);
+                            AnchorPane.setBottomAnchor(removeButton, 5.0);
+
+                            Button addAssignment = createAssignmentButton(primaryStage);
+
+                            AnchorPane.setRightAnchor(addAssignment, 75.0);
+                            AnchorPane.setTopAnchor(addAssignment, 5.0);
+                            AnchorPane.setBottomAnchor(addAssignment, 5.0);
+                            anchorPane.getChildren().addAll(label, removeButton, addAssignment);
+                            taskBox.getChildren().add(anchorPane);
                         }
                         else {
-                            //class already added. do something.
+                            createOkayWindow(primaryStage);
                         }
-
-                        AnchorPane anchorPane = new AnchorPane();
-                        String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
-                                rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-
-                        anchorPane.setStyle(style);
-                        Label label = new Label(classlist.getClass(taskBox.getChildren().size()).getClassCode());
-                        AnchorPane.setLeftAnchor(label, 5.0);
-                        AnchorPane.setTopAnchor(label, 5.0);
-
-                        Button removeButton = new Button("Remove");
-                        removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
-                        AnchorPane.setRightAnchor(removeButton, 5.0);
-                        AnchorPane.setTopAnchor(removeButton, 5.0);
-                        AnchorPane.setBottomAnchor(removeButton, 5.0);
-
-                        Button addAssignment = createAssignmentButton(primaryStage);
-
-                        AnchorPane.setRightAnchor(addAssignment, 75.0);
-                        AnchorPane.setTopAnchor(addAssignment, 5.0);
-                        AnchorPane.setBottomAnchor(addAssignment, 5.0);
-                        anchorPane.getChildren().addAll(label, removeButton, addAssignment);
-                        taskBox.getChildren().add(anchorPane);
 
                         newWindow.close();
                     }
@@ -248,6 +248,44 @@ public class UI extends Application {
             }
         } );
         return addAssignment;
+    }
+
+    private void createOkayWindow (Stage primaryStage) {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.TOP_LEFT);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        Label namePrompt = new Label("Class already exists!");
+        grid.add(namePrompt, 0, 0, 20, 20);
+
+        Button okay = new Button();
+        okay.setText(" OK ");
+        grid.add(okay, 28,10,20,20);
+
+        Scene okScene = new Scene(grid, 400, 300);
+
+        // Okay window (Stage)
+        Stage okWindow = new Stage();
+        okWindow.setTitle("Add Class");
+        okWindow.setScene(okScene);
+
+        // Specifies the modality for new window.
+        okWindow.initModality(Modality.WINDOW_MODAL);
+
+        // Specifies the owner Window (parent) for new window
+        okWindow.initOwner(primaryStage);
+
+        // Set position of second window, related to primary window.
+        okWindow.setX(primaryStage.getX() + 200);
+        okWindow.setY(primaryStage.getY() + 100);
+
+        okWindow.show();
+
+        okay.setOnAction(e -> {
+            okWindow.close();
+        });
     }
 
 }
