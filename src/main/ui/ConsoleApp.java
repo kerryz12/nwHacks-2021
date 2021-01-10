@@ -4,6 +4,7 @@ import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
 import main.model.ToDoList;
+import main.persistence.JsonReader;
 import main.persistence.JsonWriter;
 
 import java.time.LocalDate;
@@ -80,6 +81,9 @@ public class ConsoleApp {
 
             case "save":
                 doSave();
+
+            case "load":
+                doLoad();
         }
     }
 
@@ -150,9 +154,14 @@ public class ConsoleApp {
         }
     }
 
-    public void doSave(){
+    public void doSave() {
         JsonWriter saver = new JsonWriter();
         saver.writeClassListToJson(classlist);
+    }
+
+    public void doLoad() {
+        JsonReader reader = new JsonReader();
+        reader.readClassListFromJson();
     }
 
     public static void main(String[] args) {
