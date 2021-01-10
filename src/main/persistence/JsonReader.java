@@ -19,9 +19,10 @@ public class JsonReader {
 
         for (int i = 0; i < listOfFiles.length; ++i) {
             if (listOfFiles[i].isFile()) {
-                result.addClass(readClassFromJson("class" + i));
+                result.addClass(readClassFromJson("data/class" + i + ".json"));
             }
         }
+
         return result;
     }
 
@@ -30,7 +31,8 @@ public class JsonReader {
 
         try {
             Gson gson = new Gson();
-            classObj = gson.fromJson(new FileReader(filename), Class.class);
+            FileReader reader = new FileReader(filename);
+            classObj = gson.fromJson(reader, Class.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
