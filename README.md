@@ -1,6 +1,7 @@
 # nwHacks-2021
 
 ### ! We could implement a calendar using this framework: https://github.com/dlsc-software-consulting-gmbh/CalendarFX !
+### Also I made some changes to UI.java don't forget to pull
 
 ## Phase 1: Calendar Functionality
 
