@@ -10,10 +10,20 @@ public class ToDoList {
     private Map<GradedItem, Long> weightedTasks;
     private ArrayList<GradedItem> sortedList;
 
+    /** To do list is just a sorted list of tasks.
+     *
+     *  Each task has a "urgency" value assigned to it.
+     *  Urgency = Weight * Importance of Class * Hours Left Until Due Date
+     *
+     * @param cl ClassList of user that wants ToDoList.
+     */
     public ToDoList(ClassList cl){
         this.classes = cl;
     }
 
+    /**
+     * Sorts this.classes based off of urgency. Defined above.
+     */
     private void sortList(){
         currTime = System.currentTimeMillis();
         List<Class> classlist = classes.getClasslist();
@@ -31,6 +41,13 @@ public class ToDoList {
         sortedList.addAll(weightedTasks.keySet());
     }
 
+    /**
+     * Sorts a Map based off the values.
+     * @param map Input map to be sorted. Must not be null.
+     * @param <GradedItem> Keys of the map, must not be null.
+     * @param <Long> Must be a positive number.
+     * @return Sorted Map with Graded Items as Keys and Longs as the Values.
+     */
     public static <GradedItem, Long> Map<GradedItem, Long> sortByValue(Map<GradedItem, Long> map) {
         List<Map.Entry<GradedItem, Long>> list = new ArrayList<>(map.entrySet());
         list.sort(new Comparator<Map.Entry<GradedItem, Long>>() {
