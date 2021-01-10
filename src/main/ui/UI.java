@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -16,22 +15,18 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Line;
 import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
 import main.model.ToDoList;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
@@ -97,11 +92,11 @@ public class UI extends Application {
 
         Button refreshButton = new Button("Refresh");
         refreshButton.setOnAction(e -> {
-            tasksDateSorted.removeAll();
+            taskList.getItems().clear();
             for (Class c : classlist.getClasslist()) {
                 List<GradedItem> tasks = c.getTasks();
                 for (GradedItem i : tasks) {
-                    tasksDateSorted.add(i.getName());
+                    tasksDateSorted.add(i.getName() + "\t" + i.getDate().toString());
                 }
             }
             taskList.setItems(tasksDateSorted);
@@ -282,21 +277,21 @@ public class UI extends Application {
             public void handle(ActionEvent actionEvent) {
                 GridPane grid = new GridPane();
                 grid.setAlignment(Pos.TOP_LEFT);
-                grid.setHgap(10);
-                grid.setVgap(10);
+                grid.setHgap(5);
+                grid.setVgap(5);
                 grid.setPadding(new Insets(25, 25, 25, 25));
 
                 Label namePrompt = new Label("Assignment Name:");
                 grid.add(namePrompt, 0, 0, 20, 20);
 
                 TextField nameIn = new TextField();
-                grid.add(nameIn, 15, 0,20,20);
+                grid.add(nameIn, 35, 0,20,20);
 
                 Label weightPrompt = new Label("Weight (0-100): ");
                 grid.add(weightPrompt, 0, 5, 20, 20);
 
                 TextField weightIn = new TextField();
-                grid.add(weightIn, 15, 5, 20, 20);
+                grid.add(weightIn, 35, 5, 20, 20);
 
                 Label datePrompt = new Label("Due Date: ");
                 grid.add(datePrompt, 0, 10, 20, 20);
@@ -307,11 +302,20 @@ public class UI extends Application {
                         dateIn = datePicker.getValue();
                     }
                 });
-                grid.add(datePicker, 10, 10, 20, 30);
+                grid.add(datePicker, 35, 5, 20, 30);
+
+                Label timePrompt = new Label("Due Time:");
+                grid.add(timePrompt, 0, 20, 20, 20);
+
+                Label timeSpec = new Label("24-HOUR, HHMM");
+                grid.add(timeSpec, 0, 25, 20, 20);
+
+                TextField timeIn = new TextField();
+                grid.add(timeIn, 35, 20, 20, 20);
 
                 Button submitAssignment = new Button();
                 submitAssignment.setText(" Submit ");
-                grid.add(submitAssignment, 28,10,20,20);
+                grid.add(submitAssignment, 50,40,20,20);
 
                 Scene secondScene = new Scene(grid, 400, 300);
 
@@ -336,11 +340,15 @@ public class UI extends Application {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         //should add a check if weight field is actually a parseable double.
+                        String hour = timeIn.getCharacters().toString().substring(0,1);
+                        String min = timeIn.getCharacters().toString().substring(2,3);
+                        int hourInt = Integer.parseInt(hour);
+                        int minInt = Integer.parseInt(min);
+
                         classlist.getClass(0).addTask(
-
-                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(11, 59), Double.parseDouble(weightIn.getCharacters().toString())));
+                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(hourInt, minInt),
+                                        Double.parseDouble(weightIn.getCharacters().toString())));
                         newWindow.close();
-
                     }
                 } );
             }
