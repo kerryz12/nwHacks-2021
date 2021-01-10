@@ -1,4 +1,4 @@
-package main.ui;
+/*package main.ui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -32,3 +32,4 @@ public class UI extends Application {
         primaryStage.show();
     }
 }
+*/

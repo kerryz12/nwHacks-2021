@@ -13,53 +13,33 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class JsonWriter {
+    private static final int LIMIT = 32;
+
+    public JsonWriter() {}
 
     public void writeClassListToJson (ClassList classList) {
-        Iterator<Class> iter = classList.getClasslist().iterator();
         int classNumber = 0;
-        String json;
 
-        while (iter.hasNext()) {
-            json = writeObjectToJson(iter, "class" + classNumber);
+        for (Class c : classList.getClasslist()) {
+            if (classNumber > LIMIT) {
+                return;
+            }
+
+            writeObjectToJson(c, "class" + classNumber);
             classNumber++;
         }
 
         return;
     }
 
-    public Class readClassFromJson (String filename) {
-        Class classObj = null;
-
-        try {
-            Gson gson = new Gson();
-            classObj = gson.fromJson(new FileReader(filename), Class.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        return classObj;
-    }
-
     public String writeObjectToJson (Object object, String filename) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try {
-            gson.toJson(object, new FileWriter(filename));
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(filename)) {
+            gson.toJson(object, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return filename;
     }
-
-    /*private void createFile(int num, String json) {
-        File newJson = new File("class" + num);
-        try {
-            FileWriter myWriter = new FileWriter("class" + num);
-            myWriter.write(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return;
-    }*/
 }

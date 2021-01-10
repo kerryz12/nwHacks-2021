@@ -4,6 +4,7 @@ import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
 import main.model.ToDoList;
+import main.persistence.JsonWriter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -76,6 +77,9 @@ public class ConsoleApp {
             case "view to-do-list":
                 doViewToDo(todolist);
                 break;
+
+            case "save":
+                doSave();
         }
     }
 
@@ -142,6 +146,11 @@ public class ConsoleApp {
             System.out.println("\n" + gi.getName());
             System.out.println("\tDue date: " + gi.getDate());
         }
+
+    public void doSave() {
+        JsonWriter saver = new JsonWriter();
+
+        saver.writeClassListToJson(classlist);
     }
 
     public static void main(String[] args) {
