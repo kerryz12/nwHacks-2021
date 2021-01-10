@@ -72,7 +72,7 @@ public class UI extends Application {
         ListView<String> taskList = new ListView<String>();
 
         ScrollPane toDoList = new ScrollPane(toDoBox);
-        toDoList.setFitToWidth(true);
+        //toDoList.setFitToWidth(true);
 
         createCalendar();
 
@@ -109,18 +109,20 @@ public class UI extends Application {
 
         Button refreshToDo = new Button("ToDo");
         refreshToDo.setOnAction(e -> {
+            toDoBox.getChildren().clear();
             List<GradedItem> toDo = ToDoList.getToDoList(classlist);
+            AnchorPane anchorPane = new AnchorPane();
+            String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                    173, 173, 173);
+            anchorPane.setStyle(style);
             for (int i = 0; i < toDo.size(); i++){
-                AnchorPane anchorPane = new AnchorPane();
-                String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
-                        rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-                anchorPane.setStyle(style);
                 Label label = new Label(toDo.get(i).getName() + "\t" + toDo.get(i).getDate());
+                //change font or something
                 AnchorPane.setLeftAnchor(label, 5.0);
-                AnchorPane.setTopAnchor(label, 5.0);
+                AnchorPane.setTopAnchor(label, 5.0 + 20*i);
                 anchorPane.getChildren().addAll(label);
-                toDoBox.getChildren().add(anchorPane);
             }
+            toDoBox.getChildren().add(anchorPane);
         });
 
         Button addClass = new Button();
@@ -207,6 +209,7 @@ public class UI extends Application {
         GridPane buttons = new GridPane();
         buttons.add(addClass,0,0,3,3);
         buttons.add(refreshToDo, 0,3,3,3);
+      
         buttons.add(refreshButton, 0, 6, 3, 3);
         GridPane rootPane = new GridPane();
         GridPane.setConstraints(buttons, 0, 0);
@@ -222,6 +225,7 @@ public class UI extends Application {
         taskList.setItems(tasksDateSorted);
 
         rootPane.getChildren().addAll(buttons, taskBox, toDoBox, taskList);
+
 
         //when the scene is created, it should just render all the groups
 
@@ -288,8 +292,14 @@ public class UI extends Application {
                 TextField nameIn = new TextField();
                 grid.add(nameIn, 15, 0,20,20);
 
+                Label weightPrompt = new Label("Weight (0-100): ");
+                grid.add(weightPrompt, 0, 5, 20, 20);
+
+                TextField weightIn = new TextField();
+                grid.add(weightIn, 15, 5, 20, 20);
+
                 Label datePrompt = new Label("Due Date: ");
-                grid.add(datePrompt, 0, 5, 20, 20);
+                grid.add(datePrompt, 0, 10, 20, 20);
 
                 final DatePicker datePicker = new DatePicker();
                 datePicker.setOnAction(new EventHandler() {
@@ -297,7 +307,7 @@ public class UI extends Application {
                         dateIn = datePicker.getValue();
                     }
                 });
-                grid.add(datePicker, 10, 5, 20, 30);
+                grid.add(datePicker, 10, 10, 20, 30);
 
                 Button submitAssignment = new Button();
                 submitAssignment.setText(" Submit ");
@@ -325,9 +335,12 @@ public class UI extends Application {
                 submitAssignment.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
+                        //should add a check if weight field is actually a parseable double.
                         classlist.getClass(0).addTask(
-                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(1, 0), 5));
+
+                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(11, 59), Double.parseDouble(weightIn.getCharacters().toString())));
                         newWindow.close();
+
                     }
                 } );
             }
