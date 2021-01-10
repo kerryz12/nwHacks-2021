@@ -54,6 +54,7 @@ public class UI extends Application {
     private JsonWriter writer;
     private JsonReader reader;
     private final static int MAX_WEIGHT = 100;
+    int numClasses;
 
     private void setup() {
         classlist = new ClassList();
@@ -63,6 +64,7 @@ public class UI extends Application {
         items = FXCollections.observableArrayList();
         taskList = new ListView<>();
         toDoListView = new ListView<>();
+        numClasses = 0;
     }
 
     public static void main(String[] args) {
@@ -113,8 +115,9 @@ public class UI extends Application {
         loadButton.setOnAction(e -> {
             reader = new JsonReader();
             classlist = reader.readClassListFromJson();
-
+            numClasses = 0;
             for (Class c : classlist.getClasslist()) {
+                numClasses++;
                 AnchorPane anchorPane = new AnchorPane();
                 String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
                         rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
@@ -130,13 +133,15 @@ public class UI extends Application {
                 AnchorPane.setTopAnchor(removeButton, 5.0);
                 AnchorPane.setBottomAnchor(removeButton, 5.0);
 
-                Button addAssignment = createAssignmentButton(primaryStage);
+                Button addAssignment = createAssignmentButton(primaryStage, numClasses);
 
                 AnchorPane.setRightAnchor(addAssignment, 75.0);
                 AnchorPane.setTopAnchor(addAssignment, 5.0);
                 AnchorPane.setBottomAnchor(addAssignment, 5.0);
                 anchorPane.getChildren().addAll(label, removeButton, addAssignment);
                 taskBox.getChildren().add(anchorPane);
+                refreshToDo();
+                refreshTaskList();
             }
         });
 
@@ -153,6 +158,7 @@ public class UI extends Application {
         Button addClass = new Button();
         addClass.setText("Add Class");
         addClass.setOnAction(actionEvent -> {
+            numClasses++;
             GridPane grid = new GridPane();
             grid.setAlignment(Pos.TOP_LEFT);
             grid.setHgap(10);
@@ -210,12 +216,16 @@ public class UI extends Application {
                     AnchorPane.setTopAnchor(label, 5.0);
 
                     Button removeButton = new Button("Remove");
-                    removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
+                    removeButton.setOnAction(actionEvent2 -> {
+                        taskBox.getChildren().remove(anchorPane);
+                        numClasses--;
+                    }
+                    );
                     AnchorPane.setRightAnchor(removeButton, 5.0);
                     AnchorPane.setTopAnchor(removeButton, 5.0);
                     AnchorPane.setBottomAnchor(removeButton, 5.0);
 
-                    Button addAssignment = createAssignmentButton(primaryStage);
+                    Button addAssignment = createAssignmentButton(primaryStage, numClasses);
 
                     AnchorPane.setRightAnchor(addAssignment, 75.0);
                     AnchorPane.setTopAnchor(addAssignment, 5.0);
@@ -322,7 +332,7 @@ public class UI extends Application {
         updateTimeThread.start();
     }
 
-    private Button createAssignmentButton(Stage primaryStage) {
+    private Button createAssignmentButton(Stage primaryStage, int buttonNum) {
         Button addAssignment = new Button("Add Assignment");
         addAssignment.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -397,7 +407,7 @@ public class UI extends Application {
                         int hourInt = Integer.parseInt(hour);
                         int minInt = Integer.parseInt(min);
 
-                        classlist.getClass(0).addTask(
+                        classlist.getClass(buttonNum-1).addTask(
                                 new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(hourInt, minInt),
                                         (Double.parseDouble(weightIn.getCharacters().toString()) < 0.0) ? 0 :
                                         Math.min(Double.parseDouble(weightIn.getCharacters().toString()), MAX_WEIGHT)));
@@ -465,7 +475,7 @@ public class UI extends Application {
         for (Class c : classlist.getClasslist()) {
             List<GradedItem> tasks = c.getTasks();
             for (GradedItem i : tasks) {
-                tasksDateSorted.add(c.getClassCode() + ":\t" + i.getName() + "\t" + i.getDate().toString());
+                tasksDateSorted.add(c.getClassCode() + ":\t" + i.getName() + "\t" + i.getDate());
             }
         }
         //tasksDateSorted.sort()
