@@ -25,6 +25,8 @@ import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
 import main.model.ToDoList;
+import main.persistence.JsonReader;
+import main.persistence.JsonWriter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -39,6 +41,8 @@ public class UI extends Application {
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
     private CalendarView calendarView;
+    private JsonWriter writer;
+    private JsonReader reader;
 
     private void setup() {
         classlist = new ClassList();
@@ -88,6 +92,18 @@ public class UI extends Application {
             AnchorPane.setBottomAnchor(button, 5.0);
             anchorPane.getChildren().addAll(label, button);
             taskBox.getChildren().add(anchorPane);
+        });
+
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(e -> {
+            writer =  new JsonWriter();
+            writer.writeClassListToJson(classlist);
+        });
+
+        Button loadButton = new Button("Load");
+        loadButton.setOnAction(e -> {
+            reader = new JsonReader();
+            reader.readClassListFromJson();
         });
 
         Button refreshButton = new Button("Refresh");
@@ -204,6 +220,9 @@ public class UI extends Application {
         GridPane buttons = new GridPane();
         buttons.add(addClass,0,0,3,3);
         buttons.add(refreshToDo, 0,3,3,3);
+
+        buttons.add(saveButton, 0, 9, 3, 3);
+        buttons.add(loadButton, 0, 12, 3, 3);
       
         buttons.add(refreshButton, 0, 6, 3, 3);
         GridPane rootPane = new GridPane();
