@@ -7,7 +7,7 @@ public class GradedItem {
     private int date;
     private int weight;
 
-    public GradedItem(String name, int date, int weight) {
+    public GradedItem(String name, long date, int weight) {
     }
 
     public String getName() {
