@@ -2,13 +2,18 @@ package main.ui;
 
 import main.model.Class;
 import main.model.ClassList;
+import main.model.GradedItem;
+import main.model.ToDoList;
 import main.persistence.JsonWriter;
 
-import java.util.Locale;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class ConsoleApp {
     private ClassList classlist;
+    private ArrayList<GradedItem> todolist;
     private Scanner input;
     private String user;
 
@@ -63,6 +68,15 @@ public class ConsoleApp {
 
             case "view":
                 doView(classlist);
+                break;
+
+            case "sort":
+                doSort(classlist);
+                break;
+
+            case "view to-do-list":
+                doViewToDo(todolist);
+                break;
 
             case "save":
                 doSave();
@@ -97,7 +111,20 @@ public class ConsoleApp {
     }
 
     public void doEdit() {
-        System.out.println("Not implemented yet");
+        System.out.println("Enter class: ");
+        String code = input.next();
+        System.out.println("Enter assignment/exam: ");
+        String name = input.next();
+        System.out.println("Enter due date + time (YYYY-MM-DD HH:MM): ");
+        String due = input.next();
+        System.out.println("Enter weight: ");
+        int weight = Integer.parseInt(input.next());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(due, formatter);
+
+        Class selected = classlist.findClass(code);
+        selected.addTask(new GradedItem(name, dateTime, weight));
     }
 
     public void doView(ClassList list) {
@@ -108,6 +135,17 @@ public class ConsoleApp {
             System.out.println("\n");
         }
     }
+
+    public void doSort(ClassList list) {
+        ArrayList<GradedItem> sorted = ToDoList.getToDoList(list);
+        sorted.get(0);
+    }
+
+    public void doViewToDo(ArrayList<GradedItem> list) {
+        for (GradedItem gi : list) {
+            System.out.println("\n" + gi.getName());
+            System.out.println("\tDue date: " + gi.getDate());
+        }
 
     public void doSave() {
         JsonWriter saver = new JsonWriter();

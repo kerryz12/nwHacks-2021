@@ -1,13 +1,15 @@
 package main.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class GradedItem {
     private String name;
-    private int date;
+    private LocalDateTime date;
     private int weight;
 
-    public GradedItem(String name, long date, int weight) {
+    public GradedItem(String name, LocalDateTime date, int weight) {
     }
 
     public String getName() {
@@ -18,11 +20,11 @@ public class GradedItem {
         this.name = name;
     }
 
-    public int getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

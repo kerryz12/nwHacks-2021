@@ -33,6 +33,17 @@ public class ClassList {
         }
     }
 
+    public Class findClass(String code) {
+        int i = 0;
+        for (Class c : classlist) {
+            if (c.getClassCode().equals(code)) {
+                return classlist.get(i);
+            }
+            i++;
+        }
+        return null;
+    }
+
     public List<Class> getClasslist() {
         return classlist;
     }

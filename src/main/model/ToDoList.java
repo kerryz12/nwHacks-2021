@@ -1,6 +1,8 @@
 package main.model;
 
 import java.lang.reflect.Array;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class ToDoList {
@@ -32,7 +34,10 @@ public class ToDoList {
             int curr = c.getImp();
             List<GradedItem> tasks = c.getTasks();
             for (GradedItem g : tasks){
-                long hoursLeft = (g.getDate() - currTime)/MILLI_IN_HOUR;
+
+                ZonedDateTime zdt = g.getDate().atZone(ZoneId.of("America/Los_Angeles"));
+                long millis = zdt.toInstant().toEpochMilli();
+                long hoursLeft = (millis - currTime)/MILLI_IN_HOUR;
                 long val = g.getWeight() * curr * hoursLeft;
                 weightedTasks.put(g,val);
             }
