@@ -25,7 +25,7 @@ public class JsonWriter {
                 return;
             }
 
-            writeObjectToJson(c, "class" + classNumber);
+            writeObjectToJson(c, "data/class" + classNumber);
             classNumber++;
         }
 
