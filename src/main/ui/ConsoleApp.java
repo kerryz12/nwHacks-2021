@@ -2,6 +2,7 @@ package main.ui;
 
 import main.model.Class;
 import main.model.ClassList;
+import main.persistence.JsonWriter;
 
 import java.util.Locale;
 import java.util.Scanner;
@@ -62,6 +63,9 @@ public class ConsoleApp {
 
             case "view":
                 doView(classlist);
+
+            case "save":
+                doSave();
         }
     }
 
@@ -103,6 +107,12 @@ public class ConsoleApp {
             System.out.println("\tImportance: " + c.getImp());
             System.out.println("\n");
         }
+    }
+
+    public void doSave() {
+        JsonWriter saver = new JsonWriter();
+
+        saver.writeClassListToJson(classlist);
     }
 
     public static void main(String[] args) {
