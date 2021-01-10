@@ -15,7 +15,7 @@ public class ToDoList {
 
     private void sortList(){
         currTime = System.currentTimeMillis();
-        List<Class> classlist = classes.getList();
+        List<Class> classlist = classes.getClasslist();
         weightedTasks = new HashMap<>();
         for (Class c : classlist){
             int curr = c.getImp();
