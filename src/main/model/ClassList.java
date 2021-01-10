@@ -30,4 +30,11 @@ public class ClassList {
         }
     }
 
+    public List<Class> getClasslist() {
+        return classlist;
+    }
+
+    public void setClasslist(List<Class> classlist) {
+        this.classlist = classlist;
+    }
 }
