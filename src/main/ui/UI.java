@@ -25,6 +25,8 @@ import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -32,6 +34,8 @@ public class UI extends Application {
     private ClassList classlist;
     private ListView<String> list;
     private ObservableList<String> items;
+    //private int classCounter = 0;
+    private LocalDate dateIn;
 
     private void setup() {
         classlist = new ClassList();
@@ -45,6 +49,8 @@ public class UI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        setup();
+
         primaryStage.setTitle("The Scheduler");
 
         Group todoGroup = new Group();
@@ -81,8 +87,6 @@ public class UI extends Application {
             }
         });
 
-        BorderPane rootPane = new BorderPane(taskList, null, null, null, addButton);
-
         Button addClass = new Button();
         addClass.setText("Add Class");
         addClass.setOnAction(new EventHandler<ActionEvent>() {
@@ -110,17 +114,6 @@ public class UI extends Application {
                 Button submit = new Button();
                 submit.setText(" Submit ");
                 grid.add(submit, 28,10,20,20);
-                submit.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        if (!classlist.contains(codeIn.getCharacters().toString())) {
-                            classlist.addClass(new Class(codeIn.getCharacters().toString(), Integer.parseInt(importanceIn.getCharacters().toString())));
-                        }
-                        else {
-                            //class already added. do something.
-                        }
-                    }
-                });
 
                 Scene secondScene = new Scene(grid, 400, 300);
 
@@ -140,19 +133,121 @@ public class UI extends Application {
                 newWindow.setY(primaryStage.getY() + 100);
 
                 newWindow.show();
+
+                submit.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        if (!classlist.contains(codeIn.getCharacters().toString())) {
+                            classlist.addClass(new Class(codeIn.getCharacters().toString(), Integer.parseInt(importanceIn.getCharacters().toString())));
+                        }
+                        else {
+                            //class already added. do something.
+                        }
+
+                        AnchorPane anchorPane = new AnchorPane();
+                        String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                                rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+
+                        anchorPane.setStyle(style);
+                        Label label = new Label(classlist.getClass(taskBox.getChildren().size()).getClassCode());
+                        AnchorPane.setLeftAnchor(label, 5.0);
+                        AnchorPane.setTopAnchor(label, 5.0);
+
+                        Button removeButton = new Button("Remove");
+                        removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
+                        AnchorPane.setRightAnchor(removeButton, 5.0);
+                        AnchorPane.setTopAnchor(removeButton, 5.0);
+                        AnchorPane.setBottomAnchor(removeButton, 5.0);
+
+                        Button addAssignment = createAssignmentButton(primaryStage);
+
+                        AnchorPane.setRightAnchor(addAssignment, 75.0);
+                        AnchorPane.setTopAnchor(addAssignment, 5.0);
+                        AnchorPane.setBottomAnchor(addAssignment, 5.0);
+                        anchorPane.getChildren().addAll(label, removeButton, addAssignment);
+                        taskBox.getChildren().add(anchorPane);
+
+                        newWindow.close();
+                    }
+                });
+
             }
         });
+
+        BorderPane rootPane = new BorderPane(taskList, null, null, null, addClass);
 
         rootPane.getChildren().addAll(taskBox);
 
         //when the scene is created, it should just render all the groups
-
 
         Scene scene = new Scene(rootPane, 1600, 900);
 
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    private Button createAssignmentButton(Stage primaryStage) {
+        Button addAssignment = new Button("Add Assignment");
+        addAssignment.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                GridPane grid = new GridPane();
+                grid.setAlignment(Pos.TOP_LEFT);
+                grid.setHgap(10);
+                grid.setVgap(10);
+                grid.setPadding(new Insets(25, 25, 25, 25));
+
+                Label namePrompt = new Label("Assignment Name:");
+                grid.add(namePrompt, 0, 0, 20, 20);
+
+                TextField nameIn = new TextField();
+                grid.add(nameIn, 15, 0,20,20);
+
+                Label datePrompt = new Label("Due Date: ");
+                grid.add(datePrompt, 0, 5, 20, 20);
+
+                final DatePicker datePicker = new DatePicker();
+                datePicker.setOnAction(new EventHandler() {
+                    public void handle(Event t) {
+                        dateIn = datePicker.getValue();
+                    }
+                });
+                grid.add(datePicker, 10, 5, 20, 30);
+
+                Button submitAssignment = new Button();
+                submitAssignment.setText(" Submit ");
+                grid.add(submitAssignment, 28,10,20,20);
+
+                Scene secondScene = new Scene(grid, 400, 300);
+
+                // New window (Stage)
+                Stage newWindow = new Stage();
+                newWindow.setTitle("Add Class");
+                newWindow.setScene(secondScene);
+
+                // Specifies the modality for new window.
+                newWindow.initModality(Modality.WINDOW_MODAL);
+
+                // Specifies the owner Window (parent) for new window
+                newWindow.initOwner(primaryStage);
+
+                // Set position of second window, related to primary window.
+                newWindow.setX(primaryStage.getX() + 200);
+                newWindow.setY(primaryStage.getY() + 100);
+
+                newWindow.show();
+
+                submitAssignment.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        classlist.getClass(0).addTask(
+                                new GradedItem(nameIn.toString(), dateIn.atTime(1, 0), 5));
+                    }
+                } );
+            }
+        } );
+        return addAssignment;
     }
 
 }
