@@ -11,19 +11,58 @@ public class Class {
     private List<GradedItem> tasks;
     private int importance;
 
-
-    public Class (String code, ArrayList<Assignment> assig, ArrayList<Exam> exam, int imp) {
+    /** Constructor for given taskList, importance, and code.
+     *
+     * @param code String representing the specific class.
+     * @param gradedItems List of gradedItems that belong to the class.
+     * @param imp importance is an int from 0-10 that expresses the amount of interest the user has in this class.
+     */
+    public Class (String code, List<GradedItem> gradedItems, int imp) {
         classCode = code;
-        assignments = assig;
-        exams = exam;
+        tasks = gradedItems;
         importance = imp;
     }
 
-    public void addAssignment (String name, int date, int weight) {
-        assignments.add(new Assignment(name, date, weight));
+    /** Constructor for no previous task list.
+     *  Creates new list for tasks.
+     *
+     * @param code
+     * @param imp
+     */
+    public Class (String code, int imp){
+        classCode = code;
+        tasks = new ArrayList<GradedItem>();
+        importance = imp;
     }
 
-    public void addExam (String name, int date, int weight) {
-        exams.add(new Exam(name, date, weight));
+    /** Constructor for default code and no previous task list.
+     *  Sets importance to 5.
+     *
+     * @param code
+     */
+    public Class (String code){
+        classCode = code;
+        tasks = new ArrayList<GradedItem>();
+        importance = 5;
+    }
+
+    public void addTask (GradedItem gi){
+        tasks.add(gi);
+    }
+
+    public List<GradedItem> getTasks() { return this.tasks; }
+
+    public int getImp() { return importance; }
+
+    public String getClassCode() {
+        return classCode;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public void setImportance(int importance) {
+        this.importance = importance;
     }
 }
