@@ -36,6 +36,7 @@ import main.persistence.JsonWriter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -105,14 +106,39 @@ public class UI extends Application {
 
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> {
-            writer =  new JsonWriter();
+            writer = new JsonWriter();
             writer.writeClassListToJson(classlist);
         });
 
         Button loadButton = new Button("Load");
         loadButton.setOnAction(e -> {
             reader = new JsonReader();
-            reader.readClassListFromJson();
+            classlist = reader.readClassListFromJson();
+
+            for (Class c : classlist.getClasslist()) {
+                AnchorPane anchorPane = new AnchorPane();
+                String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                        rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+
+                anchorPane.setStyle(style);
+                Label label = new Label(c.getClassCode());
+                AnchorPane.setLeftAnchor(label, 5.0);
+                AnchorPane.setTopAnchor(label, 5.0);
+
+                Button removeButton = new Button("Remove");
+                removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
+                AnchorPane.setRightAnchor(removeButton, 5.0);
+                AnchorPane.setTopAnchor(removeButton, 5.0);
+                AnchorPane.setBottomAnchor(removeButton, 5.0);
+
+                Button addAssignment = createAssignmentButton(primaryStage);
+
+                AnchorPane.setRightAnchor(addAssignment, 75.0);
+                AnchorPane.setTopAnchor(addAssignment, 5.0);
+                AnchorPane.setBottomAnchor(addAssignment, 5.0);
+                anchorPane.getChildren().addAll(label, removeButton, addAssignment);
+                taskBox.getChildren().add(anchorPane);
+            }
         });
 
         Button refreshButton = new Button("Refresh");
