@@ -1,6 +1,10 @@
 package main.ui;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.view.CalendarView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -28,6 +32,7 @@ import main.model.ToDoList;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Random;
 
@@ -38,6 +43,7 @@ public class UI extends Application {
     private ObservableList<String> items;
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
+    private CalendarView calendarView;
 
     private void setup() {
         classlist = new ClassList();
@@ -67,6 +73,8 @@ public class UI extends Application {
 
         ScrollPane toDoList = new ScrollPane(toDoBox);
         toDoList.setFitToWidth(true);
+
+        createCalendar();
 
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
@@ -222,6 +230,45 @@ public class UI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    private void createCalendar() {
+        calendarView = new CalendarView();
+
+        Calendar taskCalendar = new Calendar("Tasks");
+
+        taskCalendar.setStyle(Calendar.Style.STYLE1);
+
+        CalendarSource myCalendarSource = new CalendarSource("My Calendars");
+        myCalendarSource.getCalendars().add(taskCalendar);
+
+        calendarView.getCalendarSources().add(myCalendarSource);
+
+        calendarView.setRequestedTime(LocalTime.now());
+
+        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(() -> {
+                        calendarView.setToday(LocalDate.now());
+                        calendarView.setTime(LocalTime.now());
+                    });
+
+                    try {
+                        // update every 10 seconds
+                        sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            };
+        };
+
+        updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+        updateTimeThread.setDaemon(true);
+        updateTimeThread.start();
     }
 
     private Button createAssignmentButton(Stage primaryStage) {
