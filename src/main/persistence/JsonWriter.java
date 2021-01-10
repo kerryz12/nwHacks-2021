@@ -9,6 +9,8 @@ import com.google.gson.stream.JsonToken;
 import main.model.Class;
 import main.model.ClassList;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -25,6 +27,11 @@ public class JsonWriter {
                 return;
             }
 
+            try {
+                Files.createDirectories(Paths.get("data"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             writeObjectToJson(c, "data/class" + classNumber);
             classNumber++;
         }
