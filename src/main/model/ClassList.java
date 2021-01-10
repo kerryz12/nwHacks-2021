@@ -51,4 +51,13 @@ public class ClassList {
     public void setClasslist(List<Class> classlist) {
         this.classlist = classlist;
     }
+
+    public boolean contains(String code){
+        for (Class c : classlist) {
+            if (c.getClassCode().equals(code)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

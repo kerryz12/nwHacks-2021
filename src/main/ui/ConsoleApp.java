@@ -97,9 +97,12 @@ public class ConsoleApp {
     public void doAdd() {
         System.out.println("Enter class code: ");
         String code = input.next();
+        if (classlist.contains(code)){
+            System.out.println("ERROR: Code already in system.");
+            return;
+        }
         System.out.println("Enter importance of class (0 to 10): ");
         int importance = input.nextInt();
-
         classlist.addClass(new Class(code, importance));
     }
 
@@ -111,7 +114,7 @@ public class ConsoleApp {
     }
 
     public void doEdit() {
-        System.out.println("Enter class: ");
+        System.out.println("Enter class (must be a class that has already been added): ");
         String code = input.next();
         System.out.println("Enter assignment/exam: ");
         String name = input.next();
@@ -120,19 +123,24 @@ public class ConsoleApp {
         String time = input.next();
         String due = date + " " + time;
         System.out.println("Enter weight: ");
-        double weight = Integer.parseInt(input.next());
+        double weight = Double.parseDouble(input.next());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(due, formatter);
 
         Class selected = classlist.findClass(code);
+
         selected.addTask(new GradedItem(name, dateTime, weight));
     }
 
     public void doView(ClassList list) {
         for (Class c : list.getClasslist()) {
             System.out.println("\nClass code: " + c.getClassCode());
-            System.out.println("\tTasks: " + c.getTasks());
+            System.out.print("\tTasks: ");
+            for (GradedItem task : c.getTasks()){
+                System.out.print("\t" + task.getName());
+            }
+            System.out.println("\n");
             System.out.println("\tImportance: " + c.getImp());
             System.out.println("\n");
         }
