@@ -31,16 +31,6 @@ public class JsonWriter {
     public Class readClassFromJson (String filename) {
         Class classObj = null;
 
-        /*File newJson = new File(filename);
-        try {
-            Scanner myReader = new Scanner(newJson);
-            while (myReader.hasNextLine()) {
-                args = args + myReader.nextLine();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
-
         try {
             Gson gson = new Gson();
             classObj = gson.fromJson(new FileReader(filename), Class.class);
@@ -51,11 +41,15 @@ public class JsonWriter {
         return classObj;
     }
 
-    private String writeObjectToJson (Object object) {
+    public String writeObjectToJson (Object object, String filename) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(object);
+        try {
+            gson.toJson(object, new FileWriter(filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        return json;
+        return filename;
     }
 
     private void createFile(int num, String json) {
