@@ -53,6 +53,7 @@ public class UI extends Application {
     private ListView<String> toDoListView;
     private JsonWriter writer;
     private JsonReader reader;
+    private final static int MAX_WEIGHT = 100;
 
     private void setup() {
         classlist = new ClassList();
@@ -80,8 +81,6 @@ public class UI extends Application {
         final Random rng = new Random();
         VBox taskBox = new VBox(5);
         VBox toDoBox = new VBox(5);
-
-
 
         createCalendar();
 
@@ -400,7 +399,8 @@ public class UI extends Application {
 
                         classlist.getClass(0).addTask(
                                 new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(hourInt, minInt),
-                                        Double.parseDouble(weightIn.getCharacters().toString())));
+                                        (Double.parseDouble(weightIn.getCharacters().toString()) < 0.0) ? 0 :
+                                        Math.min(Double.parseDouble(weightIn.getCharacters().toString()), MAX_WEIGHT)));
                         newWindow.close();
                         refreshTaskList();
                         refreshToDo();
@@ -468,6 +468,7 @@ public class UI extends Application {
                 tasksDateSorted.add(c.getClassCode() + ":\t" + i.getName() + "\t" + i.getDate().toString());
             }
         }
+        //tasksDateSorted.sort()
         taskList.setItems(tasksDateSorted);
     }
 
