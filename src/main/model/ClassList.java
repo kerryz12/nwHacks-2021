@@ -53,6 +53,20 @@ public class ClassList {
         return false;
     }
 
+    public boolean removeGradedItem(Class c, String assName){
+        for (Class curr : classlist){
+            if (curr.getClassCode().equals(c.getClassCode())){
+                for (GradedItem gt : curr.getTasks()){
+                    if (gt.getName().equals(assName)){
+                        curr.getTasks().remove(gt);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public Class getClass(int index) {
         return classlist.get(index);
     }

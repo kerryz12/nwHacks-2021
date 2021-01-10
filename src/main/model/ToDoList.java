@@ -38,7 +38,13 @@ public class ToDoList {
                 ZonedDateTime zdt = g.getDate().atZone(ZoneId.of("America/Los_Angeles"));
                 long millis = zdt.toInstant().toEpochMilli();
                 long hoursLeft = (millis - currTime) / MILLI_IN_HOUR;
-                double val = g.getWeight()/10 * curr * 1/hoursLeft;
+                double val;
+                if (hoursLeft > 1) {
+                    val = g.getWeight() / 100 * curr / 10 * 1 / hoursLeft;
+                }
+                else {
+                    val = g.getWeight() / 100 * curr / 10;
+                }
                 weightedTasks.put(g, val);
             }
         }

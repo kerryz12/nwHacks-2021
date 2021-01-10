@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -44,12 +45,18 @@ public class UI extends Application {
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
     private CalendarView calendarView;
+    private ObservableList<String> todolist;
+    private ListView<String> taskList;
+    private ListView<String> toDoListView;
 
     private void setup() {
         classlist = new ClassList();
-        list = new ListView<String>();
+        list = new ListView<>();
         tasksDateSorted = FXCollections.observableArrayList();
+        todolist = FXCollections.observableArrayList();
         items = FXCollections.observableArrayList();
+        taskList = new ListView<>();
+        toDoListView = new ListView<>();
     }
 
     public static void main(String[] args) {
@@ -69,10 +76,7 @@ public class UI extends Application {
         VBox taskBox = new VBox(5);
         VBox toDoBox = new VBox(5);
 
-        ListView<String> taskList = new ListView<String>();
 
-        ScrollPane toDoList = new ScrollPane(toDoBox);
-        //toDoList.setFitToWidth(true);
 
         createCalendar();
 
@@ -97,32 +101,12 @@ public class UI extends Application {
 
         Button refreshButton = new Button("Refresh");
         refreshButton.setOnAction(e -> {
-            tasksDateSorted.removeAll();
-            for (Class c : classlist.getClasslist()) {
-                List<GradedItem> tasks = c.getTasks();
-                for (GradedItem i : tasks) {
-                    tasksDateSorted.add(i.getName());
-                }
-            }
-            taskList.setItems(tasksDateSorted);
+            refreshTaskList();
         });
 
         Button refreshToDo = new Button("ToDo");
         refreshToDo.setOnAction(e -> {
-            toDoBox.getChildren().clear();
-            List<GradedItem> toDo = ToDoList.getToDoList(classlist);
-            AnchorPane anchorPane = new AnchorPane();
-            String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
-                    173, 173, 173);
-            anchorPane.setStyle(style);
-            for (int i = 0; i < toDo.size(); i++){
-                Label label = new Label(toDo.get(i).getName() + "\t" + toDo.get(i).getDate());
-                //change font or something
-                AnchorPane.setLeftAnchor(label, 5.0);
-                AnchorPane.setTopAnchor(label, 5.0 + 20*i);
-                anchorPane.getChildren().addAll(label);
-            }
-            toDoBox.getChildren().add(anchorPane);
+            refreshToDo();
         });
 
         Button addClass = new Button();
@@ -206,6 +190,20 @@ public class UI extends Application {
 
         });
 
+        taskList.setOnMouseClicked((EventHandler<MouseEvent>) click -> {
+            if (click.getClickCount() == 2) {
+                String selectedAss = taskList.getSelectionModel()
+                        .getSelectedItem();
+                if (selectedAss != null) {
+                    String classname = selectedAss.substring(0, selectedAss.indexOf(":"));
+                    String assName = selectedAss.substring(selectedAss.indexOf(":") + 2, selectedAss.indexOf("\t", selectedAss.indexOf(":") + 2));
+                    classlist.removeGradedItem(classlist.findClass(classname), assName);
+                    refreshToDo();
+                    refreshTaskList();
+                }
+            }
+        });
+
         GridPane buttons = new GridPane();
         buttons.add(addClass,0,0,3,3);
         buttons.add(refreshToDo, 0,3,3,3);
@@ -214,7 +212,7 @@ public class UI extends Application {
         GridPane rootPane = new GridPane();
         GridPane.setConstraints(buttons, 0, 0);
         GridPane.setConstraints(taskBox, 1, 0);
-        GridPane.setConstraints(toDoBox, 6, 0);
+        GridPane.setConstraints(toDoListView, 12, 0);
         GridPane.setConstraints(taskList, 9, 0);
         ColumnConstraints column1 = new ColumnConstraints();
         rootPane.getColumnConstraints().add(new ColumnConstraints(100)); // column 0 is 100 wide
@@ -223,8 +221,9 @@ public class UI extends Application {
         column1.setPercentWidth(50);
 
         taskList.setItems(tasksDateSorted);
+        toDoListView.setItems(todolist);
 
-        rootPane.getChildren().addAll(buttons, taskBox, toDoBox, taskList);
+        rootPane.getChildren().addAll(buttons, taskBox, toDoListView, taskList);
 
 
         //when the scene is created, it should just render all the groups
@@ -340,6 +339,8 @@ public class UI extends Application {
 
                                 new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(11, 59), Double.parseDouble(weightIn.getCharacters().toString())));
                         newWindow.close();
+                        refreshTaskList();
+                        refreshToDo();
 
                     }
                 } );
@@ -386,8 +387,26 @@ public class UI extends Application {
         });
     }
 
-    private Button refreshToDoList(Stage primaryStage){
-        return null;
+    private void refreshToDo(){
+        toDoListView.getItems().clear();
+        todolist.removeAll();
+        List<GradedItem> toDo = ToDoList.getToDoList(classlist);
+        for (int i = 0; i < toDo.size(); i++){
+            todolist.add(toDo.get(i).getName() + "\t" + toDo.get(i).getDate());
+        }
+        toDoListView.setItems(todolist);
+    }
+
+    private void refreshTaskList(){
+        taskList.getItems().clear();
+        tasksDateSorted.removeAll();
+        for (Class c : classlist.getClasslist()) {
+            List<GradedItem> tasks = c.getTasks();
+            for (GradedItem i : tasks) {
+                tasksDateSorted.add(c.getClassCode() + ":\t" + i.getName() + "\t");
+            }
+        }
+        taskList.setItems(tasksDateSorted);
     }
 
 }
