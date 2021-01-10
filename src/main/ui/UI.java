@@ -28,6 +28,7 @@ import javafx.scene.shape.Line;
 import main.model.Class;
 import main.model.ClassList;
 import main.model.GradedItem;
+import main.model.ToDoList;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ import java.util.Random;
 public class UI extends Application {
     private ClassList classlist;
     private ListView<String> list;
+    private ObservableList<String> tasksDateSorted;
     private ObservableList<String> items;
     private LocalDate dateIn;
     private final static int MAX_IMPORTANCE = 10;
@@ -46,6 +48,7 @@ public class UI extends Application {
     private void setup() {
         classlist = new ClassList();
         list = new ListView<String>();
+        tasksDateSorted = FXCollections.observableArrayList();
         items = FXCollections.observableArrayList();
     }
 
@@ -64,8 +67,12 @@ public class UI extends Application {
 
         final Random rng = new Random();
         VBox taskBox = new VBox(5);
-        ScrollPane taskList = new ScrollPane(taskBox);
-        taskList.setFitToWidth(true);
+        VBox toDoBox = new VBox(5);
+
+        ListView<String> taskList = new ListView<String>();
+
+        ScrollPane toDoList = new ScrollPane(toDoBox);
+        toDoList.setFitToWidth(true);
 
         createCalendar();
 
@@ -88,98 +95,133 @@ public class UI extends Application {
             taskBox.getChildren().add(anchorPane);
         });
 
-        Button addClass = new Button();
-        addClass.setText("Add Class");
-        addClass.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Label secondLabel = new Label("I'm a Label on new Window");
-                GridPane grid = new GridPane();
-                grid.setAlignment(Pos.TOP_LEFT);
-                grid.setHgap(10);
-                grid.setVgap(10);
-                grid.setPadding(new Insets(25, 25, 25, 25));
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setOnAction(e -> {
+            tasksDateSorted.removeAll();
+            for (Class c : classlist.getClasslist()) {
+                List<GradedItem> tasks = c.getTasks();
+                for (GradedItem i : tasks) {
+                    tasksDateSorted.add(i.getName());
+                }
+            }
+            taskList.setItems(tasksDateSorted);
+        });
 
-                Label codePrompt = new Label("Class Code:");
-                grid.add(codePrompt, 0, 0, 20, 20);
-
-                TextField codeIn = new TextField();
-                grid.add(codeIn, 15, 0,20,20);
-
-                Label importancePrompt = new Label("Importance:");
-                grid.add(importancePrompt, 0, 5, 20, 20);
-
-                TextField importanceIn = new TextField();
-                grid.add(importanceIn, 15, 5,20,20);
-
-                Button submit = new Button();
-                submit.setText(" Submit ");
-                grid.add(submit, 28,10,20,20);
-
-                Scene secondScene = new Scene(grid, 400, 300);
-
-                // New window (Stage)
-                Stage newWindow = new Stage();
-                newWindow.setTitle("Add Class");
-                newWindow.setScene(secondScene);
-
-                // Specifies the modality for new window.
-                newWindow.initModality(Modality.WINDOW_MODAL);
-
-                // Specifies the owner Window (parent) for new window
-                newWindow.initOwner(primaryStage);
-
-                // Set position of second window, related to primary window.
-                newWindow.setX(primaryStage.getX() + 200);
-                newWindow.setY(primaryStage.getY() + 100);
-
-                newWindow.show();
-
-                submit.setOnAction(new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent actionEvent) {
-                        if (!classlist.contains(codeIn.getCharacters().toString())) {
-                            classlist.addClass(new Class(codeIn.getCharacters().toString(),
-                                    (Integer.parseInt(importanceIn.getCharacters().toString()) < 0) ? 0 :
-                                    Math.min(Integer.parseInt(importanceIn.getCharacters().toString()), MAX_IMPORTANCE)));
-
-                            AnchorPane anchorPane = new AnchorPane();
-                            String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
-                                    rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-
-                            anchorPane.setStyle(style);
-                            Label label = new Label(classlist.getClass(taskBox.getChildren().size()).getClassCode());
-                            AnchorPane.setLeftAnchor(label, 5.0);
-                            AnchorPane.setTopAnchor(label, 5.0);
-
-                            Button removeButton = new Button("Remove");
-                            removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
-                            AnchorPane.setRightAnchor(removeButton, 5.0);
-                            AnchorPane.setTopAnchor(removeButton, 5.0);
-                            AnchorPane.setBottomAnchor(removeButton, 5.0);
-
-                            Button addAssignment = createAssignmentButton(primaryStage);
-
-                            AnchorPane.setRightAnchor(addAssignment, 75.0);
-                            AnchorPane.setTopAnchor(addAssignment, 5.0);
-                            AnchorPane.setBottomAnchor(addAssignment, 5.0);
-                            anchorPane.getChildren().addAll(label, removeButton, addAssignment);
-                            taskBox.getChildren().add(anchorPane);
-                        }
-                        else {
-                            createOkayWindow(primaryStage, "That class already exists!");
-                        }
-
-                        newWindow.close();
-                    }
-                });
-
+        Button refreshToDo = new Button("ToDo");
+        refreshToDo.setOnAction(e -> {
+            List<GradedItem> toDo = ToDoList.getToDoList(classlist);
+            for (int i = 0; i < toDo.size(); i++){
+                AnchorPane anchorPane = new AnchorPane();
+                String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                        rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+                anchorPane.setStyle(style);
+                Label label = new Label(toDo.get(i).getName() + "\t" + toDo.get(i).getDate());
+                AnchorPane.setLeftAnchor(label, 5.0);
+                AnchorPane.setTopAnchor(label, 5.0);
+                anchorPane.getChildren().addAll(label);
+                toDoBox.getChildren().add(anchorPane);
             }
         });
 
-        BorderPane rootPane = new BorderPane(taskList, null, null, null, addClass);
+        Button addClass = new Button();
+        addClass.setText("Add Class");
+        addClass.setOnAction(actionEvent -> {
+            GridPane grid = new GridPane();
+            grid.setAlignment(Pos.TOP_LEFT);
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(25, 25, 25, 25));
 
-        rootPane.getChildren().addAll(taskBox);
+            Label codePrompt = new Label("Class Code:");
+            grid.add(codePrompt, 0, 0, 20, 20);
+
+            TextField codeIn = new TextField();
+            grid.add(codeIn, 15, 0, 20, 20);
+
+            Label importancePrompt = new Label("Importance:");
+            grid.add(importancePrompt, 0, 5, 20, 20);
+
+            TextField importanceIn = new TextField();
+            grid.add(importanceIn, 15, 5, 20, 20);
+
+            Button submit = new Button();
+            submit.setText(" Submit ");
+            grid.add(submit, 28, 10, 20, 20);
+
+            Scene secondScene = new Scene(grid, 400, 300);
+
+            // New window (Stage)
+            Stage newWindow = new Stage();
+            newWindow.setTitle("Add Class");
+            newWindow.setScene(secondScene);
+
+            // Specifies the modality for new window.
+            newWindow.initModality(Modality.WINDOW_MODAL);
+
+            // Specifies the owner Window (parent) for new window
+            newWindow.initOwner(primaryStage);
+
+            // Set position of second window, related to primary window.
+            newWindow.setX(primaryStage.getX() + 200);
+            newWindow.setY(primaryStage.getY() + 100);
+
+            newWindow.show();
+
+            submit.setOnAction(actionEvent1 -> {
+                if (!classlist.contains(codeIn.getCharacters().toString())) {
+                    classlist.addClass(new Class(codeIn.getCharacters().toString(),
+                            (Integer.parseInt(importanceIn.getCharacters().toString()) < 0) ? 0 :
+                                    Math.min(Integer.parseInt(importanceIn.getCharacters().toString()), MAX_IMPORTANCE)));
+
+                    AnchorPane anchorPane = new AnchorPane();
+                    String style = String.format("-fx-background: rgb(%d, %d, %d);" + "-fx-background-color: -fx-background;",
+                            rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+
+                    anchorPane.setStyle(style);
+                    Label label = new Label(classlist.getClass(taskBox.getChildren().size()).getClassCode());
+                    AnchorPane.setLeftAnchor(label, 5.0);
+                    AnchorPane.setTopAnchor(label, 5.0);
+
+                    Button removeButton = new Button("Remove");
+                    removeButton.setOnAction(evt -> taskBox.getChildren().remove(anchorPane));
+                    AnchorPane.setRightAnchor(removeButton, 5.0);
+                    AnchorPane.setTopAnchor(removeButton, 5.0);
+                    AnchorPane.setBottomAnchor(removeButton, 5.0);
+
+                    Button addAssignment = createAssignmentButton(primaryStage);
+
+                    AnchorPane.setRightAnchor(addAssignment, 75.0);
+                    AnchorPane.setTopAnchor(addAssignment, 5.0);
+                    AnchorPane.setBottomAnchor(addAssignment, 5.0);
+                    anchorPane.getChildren().addAll(label, removeButton, addAssignment);
+                    taskBox.getChildren().add(anchorPane);
+                } else {
+                    createOkayWindow(primaryStage, "That class already exists!");
+                }
+
+                newWindow.close();
+            });
+
+        });
+
+        GridPane buttons = new GridPane();
+        buttons.add(addClass,0,0,3,3);
+        buttons.add(refreshToDo, 0,3,3,3);
+        buttons.add(refreshButton, 0, 6, 3, 3);
+        GridPane rootPane = new GridPane();
+        GridPane.setConstraints(buttons, 0, 0);
+        GridPane.setConstraints(taskBox, 1, 0);
+        GridPane.setConstraints(toDoBox, 6, 0);
+        GridPane.setConstraints(taskList, 9, 0);
+        ColumnConstraints column1 = new ColumnConstraints();
+        rootPane.getColumnConstraints().add(new ColumnConstraints(100)); // column 0 is 100 wide
+        rootPane.getColumnConstraints().add(new ColumnConstraints(800)); // column 1 is 800 wide
+
+        column1.setPercentWidth(50);
+
+        taskList.setItems(tasksDateSorted);
+
+        rootPane.getChildren().addAll(buttons, taskBox, toDoBox, taskList);
 
         //when the scene is created, it should just render all the groups
 
@@ -284,7 +326,8 @@ public class UI extends Application {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         classlist.getClass(0).addTask(
-                                new GradedItem(nameIn.toString(), dateIn.atTime(1, 0), 5));
+                                new GradedItem(nameIn.getCharacters().toString(), dateIn.atTime(1, 0), 5));
+                        newWindow.close();
                     }
                 } );
             }
@@ -328,6 +371,10 @@ public class UI extends Application {
         okay.setOnAction(e -> {
             okWindow.close();
         });
+    }
+
+    private Button refreshToDoList(Stage primaryStage){
+        return null;
     }
 
 }

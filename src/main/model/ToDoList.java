@@ -27,6 +27,7 @@ public class ToDoList {
      * Sorts this.classes based off of urgency. Defined above.
      */
     private void sortList() {
+        sortedList = new ArrayList<>();
         currTime = System.currentTimeMillis();
         List<Class> classlist = classes.getClasslist();
         weightedTasks = new LinkedHashMap<>();
