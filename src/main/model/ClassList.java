@@ -44,14 +44,6 @@ public class ClassList {
         return null;
     }
 
-    public List<Class> getClasslist() {
-        return classlist;
-    }
-
-    public void setClasslist(List<Class> classlist) {
-        this.classlist = classlist;
-    }
-
     public boolean contains(String code){
         for (Class c : classlist) {
             if (c.getClassCode().equals(code)) {
@@ -60,4 +52,17 @@ public class ClassList {
         }
         return false;
     }
+
+    public Class getClass(int index) {
+        return classlist.get(index);
+    }
+
+    public List<Class> getClasslist() {
+        return classlist;
+    }
+
+    public void setClasslist(List<Class> classlist) {
+        this.classlist = classlist;
+    }
+
 }
