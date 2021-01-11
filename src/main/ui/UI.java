@@ -478,8 +478,6 @@ public class UI extends Application {
                 tasksDateSorted.add(c.getClassCode() + ":\t" + i.getName() + "\t" + i.getDate());
             }
         }
-        //tasksDateSorted.sort()
         taskList.setItems(tasksDateSorted);
     }
-
 }
