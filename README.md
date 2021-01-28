@@ -1,5 +1,10 @@
 # nwHacks-2021
 
+## Installation Instructions
+
+1. Install Java SE 15. An easy way to do this is to download OpenJDK 15 from https://jdk.java.net/15/.
+2. Download DBManager.jar from the releases tab and run it. 
+
 ## Phase 1: Calendar Functionality
 
 As a user, I want to be able to:
